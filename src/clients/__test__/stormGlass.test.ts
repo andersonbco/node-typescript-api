@@ -51,7 +51,7 @@ describe('StormGlass client', () => {
     const stormGlass = new StormGlass(mockedAxios)
 
     await expect(stormGlass.fetchPoints(lat, lng)).rejects.toThrow(
-      'Unexpected error when trying to communicate to StormGlass: Network Error'
+      'Unexpected error when trying to communicate with StormGlass: Network Error'
     )
   })
 })
