@@ -1,4 +1,5 @@
 import { ForecastPoint, StormGlass } from '@src/clients/stormGlass'
+import { InternalError } from '@src/util/errors/internal-error'
 
 export enum BeachPosition {
   S = 'S',
@@ -24,30 +25,44 @@ export interface TimeForecast {
   forecast: BeachForecast[]
 }
 
+export class ForecastProcessingInternalError extends InternalError {
+  constructor(message: string) {
+    super(`Unexpected error during the forecats processing: ${message}`)
+  }
+}
+
 export class Forecast {
   constructor(protected stormGlass = new StormGlass()) {}
 
   public async processForecastForBeaches(
     beaches: Beach[]
   ): Promise<TimeForecast[]> {
-    const pointsWithCorrectSources: BeachForecast[] = []
-    for (const beach of beaches) {
-      // query each beach forecast from the stormglass client
-      const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng)
-      // merge the forecast and beach data into a single object
-      const enrichedBeachData = points.map((e) => ({
-        ...{
-          lat: beach.lat,
-          lng: beach.lng,
-          name: beach.name,
-          position: beach.position,
-          rating: 1, //TODO need to be implemented
-        },
-        ...e,
-      }))
-      pointsWithCorrectSources.push(...enrichedBeachData)
+    try {
+      const pointsWithCorrectSources: BeachForecast[] = []
+      for (const beach of beaches) {
+        // query each beach forecast from the stormglass client
+        const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng)
+        // merge the forecast and beach data into a single object
+        const enrichedBeachData = this.getEnrichedBeachData(points, beach)
+        pointsWithCorrectSources.push(...enrichedBeachData)
+      }
+      return this.mapForecastByTime(pointsWithCorrectSources)
+    } catch (e) {
+      throw new ForecastProcessingInternalError(e.message)
     }
-    return this.mapForecastByTime(pointsWithCorrectSources)
+  }
+
+  private getEnrichedBeachData(points: ForecastPoint[], beach: Beach) {
+    return points.map((e) => ({
+      ...{
+        lat: beach.lat,
+        lng: beach.lng,
+        name: beach.name,
+        position: beach.position,
+        rating: 1, //TODO need to be implemented
+      },
+      ...e,
+    }))
   }
 
   private mapForecastByTime(forecast: BeachForecast[]): TimeForecast[] {
