@@ -18,12 +18,18 @@ export interface Beach {
 // Merge the Beach and ForecastPoint interfaces omitting the field 'user'
 export interface BeachForecast extends Omit<Beach, 'user'>, ForecastPoint {}
 
+// grouping the the beach forecasts by time
+export interface TimeForecast {
+  time: string
+  forecast: BeachForecast[]
+}
+
 export class Forecast {
   constructor(protected stormGlass = new StormGlass()) {}
 
   public async processForecastForBeaches(
     beaches: Beach[]
-  ): Promise<BeachForecast[]> {
+  ): Promise<TimeForecast[]> {
     const pointsWithCorrectSources: BeachForecast[] = []
     for (const beach of beaches) {
       // query each beach forecast from the stormglass client
@@ -35,12 +41,28 @@ export class Forecast {
           lng: beach.lng,
           name: beach.name,
           position: beach.position,
-          rating: 1,
+          rating: 1, //TODO need to be implemented
         },
         ...e,
       }))
       pointsWithCorrectSources.push(...enrichedBeachData)
     }
-    return pointsWithCorrectSources
+    return this.mapForecastByTime(pointsWithCorrectSources)
+  }
+
+  private mapForecastByTime(forecast: BeachForecast[]): TimeForecast[] {
+    const forecastByTime: TimeForecast[] = []
+    for (const point of forecast) {
+      const timePoint = forecastByTime.find((f) => f.time === point.time)
+      if (timePoint) {
+        timePoint.forecast.push(point)
+      } else {
+        forecastByTime.push({
+          time: point.time,
+          forecast: [point],
+        })
+      }
+    }
+    return forecastByTime
   }
 }
