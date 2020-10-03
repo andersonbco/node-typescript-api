@@ -13,7 +13,7 @@ export interface TimeForecast {
 
 export class ForecastProcessingInternalError extends InternalError {
   constructor(message: string) {
-    super(`Unexpected error during the forecats processing: ${message}`)
+    super(`Unexpected error during the forecast processing: ${message}`)
   }
 }
 
