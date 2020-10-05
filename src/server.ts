@@ -14,7 +14,7 @@ export class SetupServer extends Server {
   public async init(): Promise<void> {
     this.setupExpress()
     this.setupControllers()
-    await this.databaseSetup()
+    await SetupServer.databaseSetup()
   }
 
   private setupExpress(): void {
@@ -27,7 +27,7 @@ export class SetupServer extends Server {
     this.addControllers([beachesController, forecastController])
   }
 
-  private async databaseSetup(): Promise<void> {
+  private static async databaseSetup(): Promise<void> {
     await database.connect()
   }
 
@@ -37,5 +37,11 @@ export class SetupServer extends Server {
 
   public getApp(): Application {
     return this.app
+  }
+
+  public start(): void {
+    this.app.listen(this.port, () => {
+      console.info('Server listening on port: ', this.port)
+    })
   }
 }

@@ -52,7 +52,7 @@ const stormGlassResourceConfig: IConfig = config.get('App.resources.StormGlass')
 
 export class StormGlass {
   readonly stormGlassParams =
-    'swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection'
+    'swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection,windSpeed'
   readonly stormGlassSource = 'noaa'
 
   constructor(protected request = new HTTPUtil.Request()) {}
