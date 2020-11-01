@@ -40,6 +40,6 @@ jobs:
 
       - name: Deployment
         if: github.ref == 'refs/heads/main'
-        run: git remote add umbler https://geonosis.deploy.umbler.com/jr1xpv2k/surf-forecast-andersonbco-com.git && git push umbler main
+        run: git remote add umbler ssh://git@geonosis.deploy.umbler.com:9922/jr1xpv2k/surf-forecast-andersonbco-com.git && git push umbler main
         env:
           CI: true
