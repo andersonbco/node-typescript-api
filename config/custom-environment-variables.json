@@ -4,7 +4,7 @@
     "database": {
       "mongoUrl": "MONGODB_URL"
     },
-		"auth": {
+    "auth": {
       "key": "JWT_SECRET_KEY"
     },
     "resources": {
