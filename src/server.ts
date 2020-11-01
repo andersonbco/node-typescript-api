@@ -7,6 +7,7 @@ import { UsersController } from '@src/controllers/users'
 import { Application } from 'express'
 import config from 'config'
 import * as database from '@src/database'
+import logger from './logger'
 
 export class SetupServer extends Server {
   constructor(private port = 3000) {
@@ -16,8 +17,8 @@ export class SetupServer extends Server {
   public async init(): Promise<void> {
     this.setupExpress()
     this.setupControllers()
-    console.log(config.get('App.database.mongoUrl'))
-    console.log('NODE_CONFIG: ' + config.util.getEnv('NODE_CONFIG'));
+    logger.info(config.get('App.database.mongoUrl'))
+    logger.info('NODE_CONFIG: ' + config.util.getEnv('NODE_CONFIG'))
     await this.databaseSetup()
   }
 
@@ -50,7 +51,7 @@ export class SetupServer extends Server {
 
   public start(): void {
     this.app.listen(this.port, () => {
-      console.info('Server listening on port: ', this.port)
+      logger.info('Server listening on port: ', this.port)
     })
   }
 }
