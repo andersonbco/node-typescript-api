@@ -5,6 +5,7 @@ import { BeachesController } from '@src/controllers/beaches'
 import { ForecastController } from '@src/controllers/forecast'
 import { UsersController } from '@src/controllers/users'
 import { Application } from 'express'
+import config from 'config'
 import * as database from '@src/database'
 
 export class SetupServer extends Server {
@@ -15,6 +16,8 @@ export class SetupServer extends Server {
   public async init(): Promise<void> {
     this.setupExpress()
     this.setupControllers()
+    console.log(config.get('App.database.mongoUrl'))
+
     await this.databaseSetup()
   }
 
