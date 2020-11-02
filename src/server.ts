@@ -6,6 +6,8 @@ import { ForecastController } from '@src/controllers/forecast'
 import { UsersController } from '@src/controllers/users'
 import { Application } from 'express'
 import config from 'config'
+import expressPino from 'express-pino-logger'
+import cors from 'cors'
 import * as database from '@src/database'
 import logger from './logger'
 
@@ -22,6 +24,12 @@ export class SetupServer extends Server {
 
   private setupExpress(): void {
     this.app.use(bodyParser.json())
+    this.app.use(expressPino({ logger }))
+    this.app.use(
+      cors({
+        origin: '*',
+      })
+    )
   }
 
   private setupControllers(): void {
