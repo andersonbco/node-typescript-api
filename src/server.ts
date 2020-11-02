@@ -17,8 +17,6 @@ export class SetupServer extends Server {
   public async init(): Promise<void> {
     this.setupExpress()
     this.setupControllers()
-    //logger.info(config.get('App.database.mongoUrl'))
-    logger.info('NODE_CONFIG: ' + config.util.getEnv('NODE_ENV'))
     await this.databaseSetup()
   }
 
